@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Умный Киоск — Интеллектуальный кампусный терминал APEC</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      /* Dark Theme Colors */
+      --bg: #07090c;
+      --bg-surface: #0e1218;
+      --bg-card: #131922;
+      --bg-card-hover: #18202b;
+      
+      /* Typography */
+      --text-white: #ffffff;
+      --text-secondary: #9aa7b8;
+      --text-muted: #5e6c7d;
+      
+      /* Brand Logo Gradient (#f5d143 -> #aed377 -> #7cd4ad) */
+      --grad-logo: linear-gradient(90deg, #f5d143 0%, #aed377 48%, #7cd4ad 100%);
+      --grad-logo-alt: linear-gradient(135deg, #f5d143 0%, #aed377 50%, #7cd4ad 100%);
+      --color-yellow: #f5d143;
+      --color-lime: #aed377;
+      --color-teal: #7cd4ad;
+      
+      /* Glow & Borders */
+      --border-subtle: rgba(255, 255, 255, 0.07);
+      --border-card: rgba(255, 255, 255, 0.11);
+      --border-hover: rgba(174, 211, 119, 0.35);
+      
+      --radius-sm: 8px;
+      --radius-md: 16px;
+      --radius-lg: 24px;
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+      --transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; font-size: 16px; }
+    body {
+      font-family: var(--font-sans);
+      background-color: var(--bg);
+      color: var(--text-white);
+      -webkit-font-smoothing: antialiased;
+      line-height: 1.5;
+      overflow-x: hidden;
+    }
+
+    /* Container */
+    .container {
+      width: 100%;
+      max-width: 1160px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* Header Nav */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(7, 9, 12, 0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .nav-inner {
+      height: 68px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .brand {
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .brand-logo-text {
+      font-weight: 800;
+      font-size: 1.35rem;
+      letter-spacing: -0.03em;
+      line-height: 1;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .brand-logo-text .word-white {
+      color: var(--text-white);
+      position: relative;
+    }
+    .brand-logo-text .sparkle {
+      font-size: 0.95rem;
+      color: var(--color-teal);
+      margin-left: 2px;
+      display: inline-block;
+      transform: translateY(-5px);
+    }
+    .brand-logo-text .word-gradient {
+      background: var(--grad-logo);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      list-style: none;
+    }
+    .nav-links a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: var(--transition);
+    }
+    .nav-links a:hover {
+      color: var(--text-white);
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 11px 22px;
+      border-radius: 980px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: var(--transition);
+      cursor: pointer;
+      border: none;
+    }
+    .btn-gradient {
+      background: var(--grad-logo);
+      color: #07090c;
+      box-shadow: 0 4px 18px rgba(174, 211, 119, 0.25);
+    }
+    .btn-gradient:hover {
+      transform: scale(1.02);
+      box-shadow: 0 6px 24px rgba(174, 211, 119, 0.4);
+    }
+    .btn-glass {
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text-white);
+      border: 1px solid var(--border-card);
+    }
+    .btn-glass:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.25);
+    }
+
+    /* Hero Section */
+    .hero {
+      position: relative;
+      padding: 70px 0 20px;
+      text-align: center;
+      overflow: hidden;
+    }
+    .hero-glow-bg {
+      position: absolute;
+      top: 50px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 800px;
+      height: 480px;
+      background: radial-gradient(ellipse at center, rgba(174, 211, 119, 0.14) 0%, rgba(124, 212, 173, 0.05) 45%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+    .hero .container {
+      position: relative;
+      z-index: 1;
+    }
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 16px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(174, 211, 119, 0.25);
+      border-radius: 980px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      margin-bottom: 24px;
+    }
+    .tag span {
+      background: var(--grad-logo);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .hero h1 {
+      font-size: clamp(3rem, 6.5vw, 5.2rem);
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      line-height: 1.05;
+      margin-bottom: 20px;
+    }
+    .hero h1 .word-gradient {
+      background: var(--grad-logo);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      display: inline-block;
+    }
+    .hero p {
+      font-size: clamp(1.1rem, 2vw, 1.35rem);
+      color: var(--text-secondary);
+      max-width: 660px;
+      margin: 0 auto 36px;
+      font-weight: 400;
+      letter-spacing: -0.01em;
+    }
+    .hero-actions {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 40px;
+    }
+
+    /* Hero Visual */
+    .hero-visual {
+      position: relative;
+      max-width: 1040px;
+      margin: 0 auto;
+      border-radius: var(--radius-lg);
+      background: radial-gradient(ellipse at 50% 60%, rgba(174, 211, 119, 0.06) 0%, rgba(124, 212, 173, 0.02) 40%, transparent 70%);
+      padding: 10px 0;
+    }
+    .hero-img {
+      width: 100%;
+      height: auto;
+      display: block;
+      filter: drop-shadow(0 25px 50px rgba(0, 0, 0, 0.5));
+      transition: transform 0.4s ease-out;
+    }
+    .hero-img:hover {
+      transform: translateY(-4px);
+    }
+
+    /* Common Section */
+    section {
+      padding: 96px 0;
+      position: relative;
+    }
+    .section-head {
+      text-align: center;
+      max-width: 680px;
+      margin: 0 auto 56px;
+    }
+    .section-head h2 {
+      font-size: clamp(2rem, 3.5vw, 2.8rem);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+      margin-bottom: 14px;
+    }
+    .section-head h2 span {
+      background: var(--grad-logo);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .section-head p {
+      font-size: 1.1rem;
+      color: var(--text-secondary);
+    }
+
+    /* Metrics (4 Big Numbers) */
+    .metrics-section {
+      background: var(--bg-surface);
+      border-top: 1px solid var(--border-subtle);
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+    }
+    .metric-card {
+      background: var(--bg-card);
+      border-radius: var(--radius-md);
+      padding: 36px 26px;
+      border: 1px solid var(--border-card);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+    .metric-card:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--border-hover);
+      transform: translateY(-3px);
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.35);
+    }
+    .metric-card::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: var(--grad-logo);
+      opacity: 0.6;
+    }
+    .metric-val {
+      font-family: var(--font-mono);
+      font-size: clamp(2rem, 2.7vw, 2.5rem);
+      font-weight: 700;
+      letter-spacing: -0.04em;
+      margin-bottom: 12px;
+      line-height: 1.1;
+      background: var(--grad-logo);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .metric-label {
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+      font-weight: 500;
+      line-height: 1.45;
+    }
+
+    /* 4 Pillars */
+    .pillars-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
+    }
+    .pillar-card {
+      background: var(--bg-surface);
+      border-radius: var(--radius-lg);
+      padding: 40px;
+      border: 1px solid var(--border-card);
+      transition: var(--transition);
+      position: relative;
+    }
+    .pillar-card:hover {
+      background: var(--bg-card);
+      border-color: var(--border-hover);
+      transform: translateY(-3px);
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.4);
+    }
+    .pillar-tag {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      color: var(--color-lime);
+      margin-bottom: 20px;
+      display: block;
+    }
+    .pillar-card h3 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 12px;
+    }
+    .pillar-card p {
+      font-size: 1rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    /* Living Interface (Simulated Lighting) */
+    .interface-box {
+      background: var(--bg-surface);
+      border-radius: var(--radius-lg);
+      padding: 48px;
+      border: 1px solid var(--border-card);
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 40px;
+      align-items: center;
+    }
+    .interface-box h3 {
+      font-size: 2rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 16px;
+    }
+    .interface-box p {
+      color: var(--text-secondary);
+      font-size: 1.05rem;
+      margin-bottom: 30px;
+    }
+    .state-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .state-btn {
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-radius: var(--radius-md);
+      padding: 16px 20px;
+      color: var(--text-white);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      font-family: var(--font-sans);
+      font-size: 0.95rem;
+      font-weight: 600;
+      transition: var(--transition);
+    }
+    .state-btn:hover, .state-btn.active {
+      background: var(--bg-card-hover);
+      border-color: var(--color-lime);
+    }
+    .state-btn .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #444;
+      transition: var(--transition);
+    }
+    .state-btn.active .dot {
+      box-shadow: 0 0 12px currentColor;
+    }
+    .preview-display {
+      background: var(--bg-card);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-card);
+      padding: 36px 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      min-height: 280px;
+      justify-content: center;
+    }
+    .status-light-bar {
+      width: 90px;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--color-teal);
+      margin-bottom: 24px;
+      box-shadow: 0 0 24px var(--color-teal);
+      transition: var(--transition);
+    }
+    .status-text {
+      font-size: 1.35rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .status-sub {
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+      max-width: 280px;
+      line-height: 1.45;
+    }
+
+    /* Triad (Ecosystem) */
+    .triad-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+    .triad-col {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-card);
+      border-radius: var(--radius-lg);
+      padding: 36px;
+      transition: var(--transition);
+    }
+    .triad-col:hover {
+      background: var(--bg-card);
+      border-color: var(--border-hover);
+      transform: translateY(-4px);
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.4);
+    }
+    .triad-tag {
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--color-lime);
+      margin-bottom: 16px;
+      display: block;
+    }
+    .triad-col h3 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+      letter-spacing: -0.02em;
+    }
+    .triad-col p {
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+      line-height: 1.55;
+    }
+
+    /* Contact Section */
+    .cta-section {
+      text-align: center;
+      background: radial-gradient(circle at 50% 50%, rgba(174, 211, 119, 0.08) 0%, transparent 60%);
+      padding: 100px 0;
+    }
+    .cta-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-card);
+      border-radius: var(--radius-lg);
+      padding: 60px 32px;
+      max-width: 760px;
+      margin: 0 auto;
+    }
+    .cta-card h2 {
+      font-size: clamp(2rem, 3.5vw, 2.6rem);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      margin-bottom: 16px;
+    }
+    .cta-card p {
+      font-size: 1.1rem;
+      color: var(--text-secondary);
+      margin-bottom: 32px;
+    }
+    .email-box {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 28px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-radius: 980px;
+      font-family: var(--font-mono);
+      font-size: 1.1rem;
+      color: var(--text-white);
+      text-decoration: none;
+      transition: var(--transition);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    }
+    .email-box:hover {
+      border-color: var(--color-lime);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(174, 211, 119, 0.2);
+    }
+    .email-box span {
+      background: var(--grad-logo);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-weight: 700;
+    }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid var(--border-subtle);
+      padding: 50px 0 35px;
+      background: var(--bg-surface);
+    }
+    .footer-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 36px;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+    .footer-bottom {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      padding-top: 24px;
+      border-top: 1px solid var(--border-subtle);
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .footer-email-link {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-family: var(--font-mono);
+      font-size: 0.9rem;
+      transition: var(--transition);
+    }
+    .footer-email-link:hover {
+      color: var(--color-lime);
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .metrics-grid { grid-template-columns: repeat(2, 1fr); }
+      .pillars-grid { grid-template-columns: 1fr; }
+      .interface-box { grid-template-columns: 1fr; }
+      .triad-grid { grid-template-columns: 1fr; }
+      .nav-links { display: none; }
+    }
+    @media (max-width: 600px) {
+      .metrics-grid { grid-template-columns: 1fr; }
+      .hero { padding: 40px 0 20px; }
+      .hero-actions { flex-direction: column; width: 100%; }
+      .hero-actions .btn { width: 100%; }
+      .interface-box { padding: 28px 20px; }
+      .email-box { font-size: 0.95rem; padding: 12px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="container nav-inner">
+      <a href="#" class="brand">
+        <div class="brand-logo-text">
+          <span class="word-white">Умный<span class="sparkle">✦</span></span>
+          <span class="word-gradient">Киоск</span>
+        </div>
+      </a>
+      <ul class="nav-links">
+        <li><a href="#metrics">Результаты</a></li>
+        <li><a href="#pillars">Сервисы</a></li>
+        <li><a href="#experience">Интерфейс</a></li>
+        <li><a href="#ecosystem">Кампус</a></li>
+      </ul>
+      <a href="mailto:info@apec.edu.kz" class="btn btn-gradient">Написать в колледж</a>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-glow-bg"></div>
+    <div class="container">
+      <div class="tag">
+        <span>✦ Смарт-инфраструктура кампуса APEC</span>
+      </div>
+      <h1>
+        <span class="word-white">Умный</span> <span class="word-gradient">Киоск</span>
+      </h1>
+      <p>Интеллектуальный кампусный терминал с голосовым AI, 3D-навигацией и академическим профилем студента.</p>
+      <div class="hero-actions">
+        <a href="mailto:info@apec.edu.kz" class="btn btn-gradient">Связаться по проекту</a>
+        <a href="#pillars" class="btn btn-glass">Изучить сервисы</a>
+      </div>
+      <div class="hero-visual">
+        <img src="apec_kiosk_dark_4k.png" alt="Умный Киоск Dark Studio Render" class="hero-img">
+      </div>
+    </div>
+  </section>
+
+  <!-- Metrics / 4 Numbers -->
+  <section id="metrics" class="metrics-section">
+    <div class="container">
+      <div class="section-head">
+        <h2>Ноль очередей. <span>Доступ 24/7.</span></h2>
+        <p>Ключевые показатели эффективности цифровой трансформации кампуса.</p>
+      </div>
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <div class="metric-val">–20%</div>
+          <div class="metric-label">Рутинной нагрузки заведующих отделениями снимается автоматизацией</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-val">3ч ➔ 24/7</div>
+          <div class="metric-label">Ограниченный слот куратора заменяется круглосуточной AI-поддержкой</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-val">10 сек</div>
+          <div class="metric-label">Мгновенная проверка успеваемости, GPA и допусков к сессии по ID-карте</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-val">5 сек</div>
+          <div class="metric-label">Мгновенный поиск нужной лаборатории или полигона по интерактивной 3D-карте</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4 Pillars (No Certificates on MVP) -->
+  <section id="pillars">
+    <div class="container">
+      <div class="section-head">
+        <h2>Все сервисы кампуса <span>в одном касании</span></h2>
+        <p>Четыре ключевых направления, закрывающих 100% потребностей студентов и гостей.</p>
+      </div>
+      <div class="pillars-grid">
+        <div class="pillar-card">
+          <span class="pillar-tag">01 / СТУДЕНЧЕСКИЙ ПРОФИЛЬ</span>
+          <h3>Академический профиль</h3>
+          <p>Моментальный доступ к личной успеваемости, текущему GPA, посещаемости и статусу допусков к экзаменам в один клик по студенческой ID-карте или Face ID без визита в учебную часть.</p>
+        </div>
+        <div class="pillar-card">
+          <span class="pillar-tag">02 / РАСПИСАНИЕ ОНЛАЙН</span>
+          <h3>Умное расписание</h3>
+          <p>Интерактивная сетка занятий с мгновенным поиском по группам, аудиториям и преподавателям. Автоматическая синхронизация с заменами и переносами пар в реальном времени.</p>
+        </div>
+        <div class="pillar-card">
+          <span class="pillar-tag">03 / НАВИГАЦИЯ</span>
+          <h3>3D-навигатор кампуса</h3>
+          <p>Пошаговая поэтажная навигация по корпусам APEC PetroTechnic, мастерским и лабораториям. Построение оптимального маршрута и мгновенный экспорт карты в смартфон по QR-коду.</p>
+        </div>
+        <div class="pillar-card">
+          <span class="pillar-tag">04 / КАРЬЕРА И ПАРТНЕРЫ</span>
+          <h3>Карьерный лифт</h3>
+          <p>Прямая витрина стажировок и программ практики от индустриальных гигантов (ТШО, NCOC, КазМунайГаз). Быстрый просмотр требований и контактов прямо на экране.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Living Interface Simulation -->
+  <section id="experience" style="background: var(--bg-surface); border-top: 1px solid var(--border-subtle); border-bottom: 1px solid var(--border-subtle);">
+    <div class="container">
+      <div class="section-head">
+        <h2>Технологии, которые <span>чувствуют человека</span></h2>
+        <p>Адресная подсветка WS2812B и датчики приближения создают живой диалог с пользователем.</p>
+      </div>
+      <div class="interface-box">
+        <div>
+          <h3>Световой язык терминала</h3>
+          <p>Нажмите на состояние ниже, чтобы увидеть световую реакцию терминала:</p>
+          <div class="state-buttons">
+            <button class="state-btn active" onclick="setState('idle', '#7cd4ad', 'Режим ожидания', 'Мягкое дежурное дыхание мягким бирюзово-зеленым светом. Приглашает подойти.')">
+              <span>01. Ожидание в холле</span>
+              <span class="dot" style="background: #7cd4ad; color: #7cd4ad;"></span>
+            </button>
+            <button class="state-btn" onclick="setState('ok', '#aed377', 'Узнал студента', 'Карта считана за 0.3 секунды. Зеленый импульс подтверждения доступа.')">
+              <span>02. Считывание ID-карты</span>
+              <span class="dot" style="background: #aed377; color: #aed377;"></span>
+            </button>
+            <button class="state-btn" onclick="setState('think', '#f5d143', 'AI слушает и думает', 'Динамическая пульсация теплым золотым цветом во время обработки вопроса.')">
+              <span>03. Голосовой AI-диалог</span>
+              <span class="dot" style="background: #f5d143; color: #f5d143;"></span>
+            </button>
+          </div>
+        </div>
+        <div class="preview-display">
+          <div class="status-light-bar" id="lightBar"></div>
+          <div class="status-text" id="statusTitle">Режим ожидания</div>
+          <div class="status-sub" id="statusDesc">Мягкое дежурное дыхание мягким бирюзово-зеленым светом. Приглашает подойти.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Ecosystem: Triad -->
+  <section id="ecosystem">
+    <div class="container">
+      <div class="section-head">
+        <h2>Ценность для <span>каждого участника</span></h2>
+        <p>Проект создает синергию между студентами, учебным заведением и работодателями.</p>
+      </div>
+      <div class="triad-grid">
+        <div class="triad-col">
+          <span class="triad-tag">Студентам</span>
+          <h3>Комфорт и скорость</h3>
+          <p>Никаких очередей в приемные часы, моментальная проверка успеваемости и допусков, доступ к расписанию и вакансиям партнеров 24/7.</p>
+        </div>
+        <div class="triad-col">
+          <span class="triad-tag">Кампусу</span>
+          <h3>Статус и разгрузка</h3>
+          <p>Снятие 20% рутинных обращений с заведующих и кураторов, упорядоченный поток студентов и флагманский статус кампуса.</p>
+        </div>
+        <div class="triad-col">
+          <span class="triad-tag">Индустрии</span>
+          <h3>Прямой найм талантов</h3>
+          <p>Компании (ТШО, NCOC, КМГ) получают прямой доступ к лучшим студентам колледжа через интерактивную витрину стажировок.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Section (Only College Email) -->
+  <section id="contact" class="cta-section">
+    <div class="container">
+      <div class="cta-card">
+        <h2>Готовы внедрить <span>Умный Киоск</span>?</h2>
+        <p>По всем вопросам сотрудничества, пилотного внедрения и демонстрации обращайтесь в администрацию колледжа:</p>
+        <div style="margin-top: 10px;">
+          <a href="mailto:info@apec.edu.kz" class="email-box">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--color-lime);"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+            <span>info@apec.edu.kz</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="footer-top">
+        <div class="brand">
+          <div class="brand-logo-text">
+            <span class="word-white">Умный<span class="sparkle">✦</span></span>
+            <span class="word-gradient">Киоск</span>
+          </div>
+        </div>
+        <a href="mailto:info@apec.edu.kz" class="footer-email-link">info@apec.edu.kz</a>
+      </div>
+      <div class="footer-bottom">
+        <div>© 2026 Умный Киоск. Все права защищены. APEC PetroTechnic Higher College.</div>
+        <div>#SmartCampus  •  #УмныйКиоск  •  #APECPetroTechnic</div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    function setState(mode, color, title, desc) {
+      const bar = document.getElementById('lightBar');
+      const st = document.getElementById('statusTitle');
+      const sd = document.getElementById('statusDesc');
+      bar.style.background = color;
+      bar.style.boxShadow = '0 0 24px ' + color;
+      st.textContent = title;
+      sd.textContent = desc;
+      
+      document.querySelectorAll('.state-btn').forEach(b => b.classList.remove('active'));
+      event.currentTarget.classList.add('active');
+    }
+  </script>
+</body>
+</html>
